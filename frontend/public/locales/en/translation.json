@@ -1,0 +1,27 @@
+{
+  "home": {
+    "title": "Calorie Counter AI",
+    "description": "Upload an image of your food to get its nutritional information.",
+    "form": {
+      "image_label": "Food Image",
+      "submit_button": "Analyze Image",
+      "loading_button": "Analyzing...",
+      "error": {
+        "no_file": "Please select a file to analyze."
+      }
+    },
+    "results": {
+      "title": "Nutritional Information",
+      "food_name": "Food",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "no_food_detected": "No food detected in the image."
+    },
+    "language_switcher": {
+      "en": "English",
+      "ar": "العربية"
+    }
+  }
+}
