@@ -1,0 +1,8 @@
+{
+  "name": "calorie-counter-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "api"
+  ]
+}
