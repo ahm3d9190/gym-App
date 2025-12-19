@@ -1,9 +1,33 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from pydantic import BaseModel
 import base64
 import requests
 import os
+from cryptography.fernet import Fernet, InvalidToken
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.backends import default_backend
 
 app = FastAPI()
+
+class EncryptRequest(BaseModel):
+    text: str
+    password: str
+
+class DecryptRequest(BaseModel):
+    encrypted_text: str
+    password: str
+
+def get_key(password: str, salt: bytes) -> bytes:
+    """Derives a key from a password and salt."""
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend()
+    )
+    return base64.urlsafe_b64encode(kdf.derive(password.encode()))
 
 # IMPORTANT: Set these environment variables with your Fatsecret API credentials
 FATSECRET_CLIENT_ID = os.environ.get("FATSECRET_CLIENT_ID")
@@ -30,6 +54,30 @@ def get_access_token():
 @app.get("/api")
 def read_root():
     return {"message": "Welcome to the Calorie Counter AI API!"}
+
+
+@app.post("/api/encrypt")
+def encrypt_message(request: EncryptRequest):
+    """Encrypts a message with a password."""
+    salt = os.urandom(16)
+    key = get_key(request.password, salt)
+    fernet = Fernet(key)
+    encrypted_text = fernet.encrypt(request.text.encode())
+    return {"encrypted_text": base64.urlsafe_b64encode(salt + encrypted_text).decode()}
+
+@app.post("/api/decrypt")
+def decrypt_message(request: DecryptRequest):
+    """Decrypts a message with a password."""
+    try:
+        decoded_data = base64.urlsafe_b64decode(request.encrypted_text)
+        salt = decoded_data[:16]
+        encrypted_text = decoded_data[16:]
+        key = get_key(request.password, salt)
+        fernet = Fernet(key)
+        decrypted_text = fernet.decrypt(encrypted_text).decode()
+        return {"decrypted_text": decrypted_text}
+    except (InvalidToken, TypeError, ValueError):
+        raise HTTPException(status_code=400, detail="Invalid encrypted text or password.")
 
 
 @app.post("/api/analyze")

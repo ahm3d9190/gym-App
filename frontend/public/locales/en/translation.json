@@ -23,5 +23,16 @@
       "en": "English",
       "ar": "العربية"
     }
+  },
+  "encryption": {
+    "title": "Encrypt & Decrypt",
+    "text_placeholder": "Enter text to encrypt or decrypt",
+    "password_placeholder": "Enter password",
+    "encrypt_button": "Encrypt",
+    "decrypt_button": "Decrypt",
+    "loading": "Loading...",
+    "result_title": "Result",
+    "copy_button": "Copy to Clipboard",
+    "move_to_input_button": "Move to Input"
   }
 }
