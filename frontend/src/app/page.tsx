@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Image from "next/image";
+import Encryption from "@/components/Encryption";
 
 type NutritionInfo = {
   food_name: string;
@@ -166,6 +167,7 @@ export default function Home() {
           </div>
         )}
       </div>
+      <Encryption />
     </main>
   );
 }
